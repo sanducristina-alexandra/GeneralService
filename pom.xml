@@ -19,6 +19,8 @@
             <groupId>org.bootcamp</groupId>
             <artifactId>OnlineServices</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/OnlineServices-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 
