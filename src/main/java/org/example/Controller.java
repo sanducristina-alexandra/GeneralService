@@ -4,24 +4,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class Controller {
-    @GetMapping("/data/{id}")
-    public String getData(@PathVariable("id") String id) {
-        return "Data with ID " + id;
-    }
 
-    @PostMapping("/data")
-    public String processData(@RequestBody String data) {
-        return "Received data: " + data;
-    }
+    @PostMapping("/request")
+    public String processRequest(@RequestBody Request request) {
+        if (!Verifiers.verifyUserId(request.getUserId()))
+            return "Request denied. User not authorized. \n" + request.toString();
 
-    @PutMapping("/data/{id}")
-    public String updateData(@PathVariable("id") String id, @RequestBody String data) {
-        return "Updated data with ID " + id + ": " + data;
-    }
-
-    @PatchMapping("/data/{id}")
-    public String patchData(@PathVariable("id") String id, @RequestBody String data) {
-        return "Patched data with ID " + id + ": " + data;
+        if (!RequestProcessor.processRequest(request))
+            return "Request processing failed. \n" + request.toString();
+        else
+            return "Request processed. \n" + request.toString();
     }
 
 }
