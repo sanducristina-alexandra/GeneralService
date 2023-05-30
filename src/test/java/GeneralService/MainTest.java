@@ -1,4 +1,3 @@
-package org.example;
-
+package GeneralService;
 public class MainTest {
 }
