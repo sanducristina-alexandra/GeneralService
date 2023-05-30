@@ -1,4 +1,4 @@
-package org.example;
+package GeneralService;
 
 import org.springframework.web.bind.annotation.*;
 
