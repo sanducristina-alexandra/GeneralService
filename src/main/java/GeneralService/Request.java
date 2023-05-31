@@ -1,4 +1,4 @@
-package org.example;
+package GeneralService;
 
 public class Request {
     private String userId;
