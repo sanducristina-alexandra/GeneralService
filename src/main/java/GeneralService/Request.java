@@ -2,9 +2,8 @@ package GeneralService;
 
 public class Request {
     private String userId;
-    RequestType requestType;
+    private RequestType requestType;
     private short requestValue;
-
     public Request() {
 
     }
