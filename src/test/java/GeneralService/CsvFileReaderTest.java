@@ -13,10 +13,10 @@ public class CsvFileReaderTest {
     private final CsvFileReader csvFileReader = new CsvFileReader();
 
     @Test
-    void correctTest(){
+    void correctTest() {
         List<String> list = csvFileReader.readFile(new File(".\\src\\main\\resources\\test.csv"));
-        List<String> listExpected = new ArrayList<>(Arrays.asList("1","2","3","4","5","6","7","wddw","qwd"));
-        Assertions.assertEquals(listExpected,list);
+        List<String> listExpected = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "wddw", "qwd"));
+        Assertions.assertEquals(listExpected, list);
     }
 
 }

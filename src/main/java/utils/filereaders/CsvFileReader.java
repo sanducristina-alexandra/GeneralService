@@ -16,12 +16,12 @@ public class CsvFileReader implements CustomFileReader {
     public List<String> readFile(File file) {
         List<String> list = new ArrayList<>();
         String line;
-        try(BufferedReader br = new BufferedReader(new FileReader(file))){
-           while ((line = br.readLine())!=null){
-               String[] info = line.split(",");
-               list.addAll(Arrays.asList(info));
-           }
-        }catch (IOException exception){
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                list.addAll(Arrays.asList(info));
+            }
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
         return list;
