@@ -1,6 +1,7 @@
 package GeneralService;
 
 public class Request {
+
     private String userId;
     private RequestType requestType;
     private short requestValue;

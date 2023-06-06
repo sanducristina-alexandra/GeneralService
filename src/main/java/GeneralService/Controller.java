@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 public class Controller {
+
     public List<String> validCarUserIds = new ArrayList<>(Arrays.asList("50075", "15080"));
 
     @PostMapping("/request")
