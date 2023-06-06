@@ -17,18 +17,14 @@ public class CsvFileReaderTest {
     private final CsvFileReader csvFileReader = new CsvFileReader();
 
     @Test
-    void correctTest() {
-        try {
-            Path filePath = Files.createTempFile("test", ".csv");
-            String fileData = "1,2,3,4,5,6,7,wddw,qwd";
-            Files.write(filePath, fileData.getBytes(), StandardOpenOption.WRITE);
-            List<String> list = csvFileReader.readFile(new File(filePath.toUri()));
-            List<String> listExpected = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "wddw", "qwd"));
-            Assertions.assertEquals(listExpected, list);
-            Files.delete(filePath);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+    void correctTest() throws IOException {
+        Path filePath = Files.createTempFile("test", ".csv");
+        String fileData = "1,2,3,4,5,6,7,wddw,qwd";
+        Files.write(filePath, fileData.getBytes(), StandardOpenOption.WRITE);
+        List<String> list = csvFileReader.readFile(new File(filePath.toUri()));
+        List<String> listExpected = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "wddw", "qwd"));
+        Assertions.assertEquals(listExpected, list);
+        Files.delete(filePath);
     }
 
 }
