@@ -33,3 +33,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Project files ###
+OnlineServices-1.0-SNAPSHOT.jar
+log4j2.xml
