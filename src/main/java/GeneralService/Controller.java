@@ -1,27 +1,18 @@
 package GeneralService;
 
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class Controller {
-    @GetMapping("/data/{id}")
-    public String getData(@PathVariable("id") String id) {
-        return "Data with ID " + id;
-    }
 
-    @PostMapping("/data")
-    public String processData(@RequestBody String data) {
-        return "Received data: " + data;
-    }
+    public List<String> validCarUserIds = new ArrayList<>(Arrays.asList("50075", "15080"));
 
-    @PutMapping("/data/{id}")
-    public String updateData(@PathVariable("id") String id, @RequestBody String data) {
-        return "Updated data with ID " + id + ": " + data;
-    }
-
-    @PatchMapping("/data/{id}")
-    public String patchData(@PathVariable("id") String id, @RequestBody String data) {
-        return "Patched data with ID " + id + ": " + data;
+    @PostMapping("/request")
+    public Boolean processRequest(@RequestBody Request request) {
+        return validCarUserIds.contains(request.getUserId());
     }
 
 }
