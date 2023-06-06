@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CsvFileReader implements CustomFileReader {
@@ -18,9 +19,7 @@ public class CsvFileReader implements CustomFileReader {
         try(BufferedReader br = new BufferedReader(new FileReader(file))){
            while ((line = br.readLine())!=null){
                String[] info = line.split(",");
-               for (String elem:info){
-                   list.add(elem);
-               }
+               list.addAll(Arrays.asList(info));
            }
         }catch (IOException exception){
             exception.printStackTrace();
