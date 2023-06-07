@@ -20,6 +20,7 @@ public class Configurations {
     public WindowControlService windowControlService() {
         return new WindowControlService();
     }
+
     private static final Logger logger = LogManager.getLogger(Configurations.class.getName());
 
     public List<String> getActivatedServicesNames() {
@@ -34,9 +35,9 @@ public class Configurations {
         for (String serviceName : activatedServicesNames) {
             if (serviceName.equals(WindowControlService.class.getName())) {
                 activatedServices.add(windowControlService());
-                logger.info(serviceName+" is in the activated services list.");
-            }else{
-                logger.info(serviceName+" is not in the activated services list.");
+                logger.info(serviceName + " is in the activated services list.");
+            } else {
+                logger.info(serviceName + " is not in the activated services list.");
             }
         }
         return activatedServices;
