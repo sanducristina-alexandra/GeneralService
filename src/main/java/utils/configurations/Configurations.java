@@ -1,6 +1,5 @@
 package utils.configurations;
 
-import com.google.common.collect.ImmutableMap;
 import onlineservices.Service;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,22 +13,25 @@ import java.util.List;
 
 @Configuration
 public class Configurations {
-    private final ImmutableMap<String, Service> allServices = ImmutableMap.of(
-            WindowControlService.class.getName(), new WindowControlService()
-    );
+
+    @Bean
+    public WindowControlService windowControlService() {
+        return new WindowControlService();
+    }
 
     public List<String> getActivatedServicesNames() {
         CsvFileReader fileReader = new CsvFileReader();
         return fileReader.readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
     }
 
-    @Bean(name = "activeServices")
-    public List<Service> getActivatedServices() {
+    @Bean
+    public List<Service> activatedServices() {
         List<Service> activatedServices = new ArrayList<>();
-        List<String> activatesServicesNames = getActivatedServicesNames();
-        for (String serviceName : activatesServicesNames) {
-            Service activatedService = allServices.get(serviceName);
-            activatedServices.add(activatedService);
+        List<String> activatedServicesNames = getActivatedServicesNames();
+        for (String serviceName : activatedServicesNames) {
+            if (serviceName.equals(WindowControlService.class.getName())) {
+                activatedServices.add(windowControlService());
+            }
         }
         return activatedServices;
     }
