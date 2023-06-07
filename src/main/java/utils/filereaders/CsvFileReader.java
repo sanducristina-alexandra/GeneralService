@@ -1,5 +1,6 @@
 package utils.filereaders;
 
+import org.apache.logging.log4j.LogManager;
 import utils.CustomFileReader;
 
 import java.io.BufferedReader;
@@ -9,8 +10,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CsvFileReader implements CustomFileReader {
+
+    private static final Logger logger = LogManager.getLogger(CsvFileReader.class);
 
     @Override
     public List<String> readFile(File file) {
@@ -22,8 +27,9 @@ public class CsvFileReader implements CustomFileReader {
                 list.addAll(Arrays.asList(info));
             }
         } catch (IOException exception) {
-            exception.printStackTrace();
+            logger.error("An error occurred while reading the file: {}\n{}", file.getPath(), exception);
         }
         return list;
     }
+
 }
