@@ -1,6 +1,8 @@
 package utils.configurations;
 
 import onlineservices.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import services.WindowControl.WindowControlService;
@@ -18,6 +20,7 @@ public class Configurations {
     public WindowControlService windowControlService() {
         return new WindowControlService();
     }
+    private static final Logger logger = LogManager.getLogger(Configurations.class.getName());
 
     public List<String> getActivatedServicesNames() {
         CsvFileReader fileReader = new CsvFileReader();
@@ -31,6 +34,9 @@ public class Configurations {
         for (String serviceName : activatedServicesNames) {
             if (serviceName.equals(WindowControlService.class.getName())) {
                 activatedServices.add(windowControlService());
+                logger.info(serviceName+" is in the activated services list.");
+            }else{
+                logger.info(serviceName+" is not in the activated services list.");
             }
         }
         return activatedServices;
