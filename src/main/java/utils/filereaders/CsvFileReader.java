@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CsvFileReader implements CustomFileReader {
 
-    private static final Logger logger = LogManager.getLogger(CsvFileReader.class);
+    private static final Logger LOGGER = LogManager.getLogger(CsvFileReader.class);
 
     @Override
     public List<String> readFile(File file) {
@@ -27,7 +27,7 @@ public class CsvFileReader implements CustomFileReader {
                 list.addAll(Arrays.asList(info));
             }
         } catch (IOException exception) {
-            logger.error("An error occurred while reading the file: {}\n{}", file.getPath(), exception);
+            LOGGER.error("An error occurred while reading the file: {}\n{}", file.getPath(), exception);
         }
         return list;
     }
