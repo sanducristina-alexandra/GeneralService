@@ -65,5 +65,10 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/OnlineServices-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.0.0-jre</version>
+        </dependency>
     </dependencies>
 </project>
