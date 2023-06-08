@@ -9,5 +9,4 @@ import java.util.List;
 public class OnlineServiceHandler {
     @Autowired
     private List<Service> activatedServices;
-
 }

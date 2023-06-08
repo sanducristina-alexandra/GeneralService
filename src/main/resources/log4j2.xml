@@ -14,7 +14,7 @@
         <Logger name="log" level="error" additivity="false">
             <AppenderRef ref="RollingFile"/>
         </Logger>
-        <Root level="trace">
+        <Root level="info">
             <AppenderRef ref="RollingFile"/>
         </Root>
     </Loggers>
