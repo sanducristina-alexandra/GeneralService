@@ -1,12 +1,13 @@
 package GeneralService;
 
-import onlineservices.Service;
+import onlineservices.OnlineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@org.springframework.stereotype.Service
+@Service
 public class OnlineServiceHandler {
     @Autowired
-    private List<Service> activatedServices;
+    private List<OnlineService> activatedServices;
 }
