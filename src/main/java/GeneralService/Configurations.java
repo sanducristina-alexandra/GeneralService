@@ -19,7 +19,6 @@ public class Configurations {
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
     @Autowired
     private WindowControlService windowControlService;
-
     @Bean
     public WindowControlService windowControlService() {
         return new WindowControlService();
@@ -44,5 +43,4 @@ public class Configurations {
         }
         return activatedServices;
     }
-
 }
