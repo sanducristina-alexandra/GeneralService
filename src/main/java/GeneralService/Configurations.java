@@ -16,6 +16,7 @@ import java.util.List;
 @Configuration
 public class Configurations {
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
+
     @Bean
     public WindowControlService windowControlService() {
         return new WindowControlService();
