@@ -17,8 +17,6 @@ import java.util.List;
 @Configuration
 public class Configurations {
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
-    @Autowired
-    private WindowControlService windowControlService;
     @Bean
     public WindowControlService windowControlService() {
         return new WindowControlService();
@@ -32,10 +30,9 @@ public class Configurations {
     @Bean
     public List<OnlineService> activatedServices() {
         List<OnlineService> activatedServices = new ArrayList<>();
-        List<String> activatedServicesNames = getActivatedServicesNames();
-        for (String serviceName : activatedServicesNames) {
+        for (String serviceName : getActivatedServicesNames()) {
             if (serviceName.equals(WindowControlService.class.getSimpleName())) {
-                activatedServices.add(windowControlService);
+                activatedServices.add(windowControlService());
                 LOGGER.info(serviceName + " is in the activated services list.");
             } else {
                 LOGGER.info(serviceName + " is not in the activated services list.");
