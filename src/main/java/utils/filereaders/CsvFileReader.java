@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
+
 import org.apache.logging.log4j.Logger;
 
 public class CsvFileReader implements CustomFileReader {
@@ -28,8 +28,14 @@ public class CsvFileReader implements CustomFileReader {
             }
         } catch (IOException exception) {
             LOGGER.error("An error occurred while reading the file: {}\n{}", file.getPath(), exception);
+            try {
+                if (file.createNewFile()) {
+                    LOGGER.info("Created the file at " + file.getPath());
+                }
+            } catch (IOException e) {
+                LOGGER.error("An error occurred while creating the file: {}\\n{}", file.getPath(), exception);
+            }
         }
         return list;
     }
-
 }

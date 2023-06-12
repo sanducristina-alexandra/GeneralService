@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import utils.CustomFileReader;
 import utils.filereaders.CsvFileReader;
 
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Configuration
 public class Configurations {
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
+    private static final CustomFileReader CSV_FILE_READER = new CsvFileReader();
 
     @Bean
     public WindowControlService windowControlService() {
@@ -23,8 +25,7 @@ public class Configurations {
     }
 
     public List<String> getActivatedServicesNames() {
-        CsvFileReader fileReader = new CsvFileReader();
-        return fileReader.readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
+        return CSV_FILE_READER.readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
     }
 
     @Bean
@@ -39,5 +40,24 @@ public class Configurations {
             }
         }
         return activatedServices;
+    }
+
+    public List<String> getValidCarUserIds() {
+        return CSV_FILE_READER.readFile(new File(".\\src\\main\\resources\\valid-car-user-ids.csv"));
+
+    }
+
+    @Bean
+    public List<Integer> validCarUserIds() {
+        List<Integer> validCarUserIds = new ArrayList<>();
+        if (getValidCarUserIds().isEmpty()) {
+            LOGGER.info("The list of valid IDs is empty.");
+        } else {
+            for (String string : getValidCarUserIds()) {
+                validCarUserIds.add(Integer.parseInt(string));
+                LOGGER.info(string + " is in the valid IDs list.");
+            }
+        }
+        return validCarUserIds;
     }
 }
