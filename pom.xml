@@ -12,6 +12,7 @@
         <maven.compiler.source>9</maven.compiler.source>
         <maven.compiler.target>9</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <onlineservices.version>1.0-SNAPSHOT</onlineservices.version>
     </properties>
 
     <dependencies>
@@ -63,7 +64,7 @@
             <artifactId>OnlineServices</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/OnlineServices-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/libs/OnlineServices-${onlineservices.version}.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
