@@ -6,18 +6,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import utils.CustomFileReader;
 import utils.filereaders.CsvFileReader;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 public class Configurations {
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
-    private static final CustomFileReader CSV_FILE_READER = new CsvFileReader();
+
 
     @Bean
     public WindowControlService windowControlService() {
@@ -25,7 +25,7 @@ public class Configurations {
     }
 
     public List<String> getActivatedServicesNames() {
-        return CSV_FILE_READER.readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
+        return new CsvFileReader().readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
     }
 
     @Bean
@@ -42,18 +42,22 @@ public class Configurations {
         return activatedServices;
     }
 
-    public List<String> getValidCarUserIds() {
-        return CSV_FILE_READER.readFile(new File(".\\src\\main\\resources\\valid-car-user-ids.csv"));
-
-    }
-
     @Bean
     public List<Integer> validCarUserIds() {
         List<Integer> validCarUserIds = new ArrayList<>();
-        if (getValidCarUserIds().isEmpty()) {
+        File file = new File(".\\src\\main\\resources\\valid-car-user-ids.csv");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException exception) {
+                LOGGER.error("An error occurred while creating the file: {}\\n{}", file.getPath(), exception);
+            }
+        }
+        List<String> validCarUserIdsString = new CsvFileReader().readFile(file);
+        if (validCarUserIdsString.isEmpty()) {
             LOGGER.info("The list of valid IDs is empty.");
         } else {
-            for (String string : getValidCarUserIds()) {
+            for (String string : validCarUserIdsString) {
                 validCarUserIds.add(Integer.parseInt(string));
                 LOGGER.info(string + " is in the valid IDs list.");
             }

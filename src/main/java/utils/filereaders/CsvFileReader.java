@@ -28,13 +28,6 @@ public class CsvFileReader implements CustomFileReader {
             }
         } catch (IOException exception) {
             LOGGER.error("An error occurred while reading the file: {}\n{}", file.getPath(), exception);
-            try {
-                if (file.createNewFile()) {
-                    LOGGER.info("Created the file at " + file.getPath());
-                }
-            } catch (IOException e) {
-                LOGGER.error("An error occurred while creating the file: {}\\n{}", file.getPath(), exception);
-            }
         }
         return list;
     }
