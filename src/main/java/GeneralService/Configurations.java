@@ -53,15 +53,26 @@ public class Configurations {
                 LOGGER.error("An error occurred while creating the file: {}\\n{}", file.getPath(), exception);
             }
         }
-        List<String> validCarUserIdsString = new CsvFileReader().readFile(file);
-        if (validCarUserIdsString.isEmpty()) {
+        List<String> extractedValidCarUserIdsAsStrings = new CsvFileReader().readFile(file);
+        if (extractedValidCarUserIdsAsStrings.isEmpty()) {
             LOGGER.info("The list of valid IDs is empty.");
         } else {
-            for (String string : validCarUserIdsString) {
-                validCarUserIds.add(Integer.parseInt(string));
-                LOGGER.info(string + " is in the valid IDs list.");
+            for (String string : extractedValidCarUserIdsAsStrings) {
+                if (isInteger(string)) {
+                    validCarUserIds.add(Integer.parseInt(string));
+                    LOGGER.info(string + " is in the valid IDs list.");
+                }
             }
         }
         return validCarUserIds;
+    }
+
+    public boolean isInteger(String string) {
+        try {
+            Integer.parseInt(string);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
