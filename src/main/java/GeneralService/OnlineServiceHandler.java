@@ -13,13 +13,4 @@ public class OnlineServiceHandler {
     @Autowired
     private List<OnlineService> activatedServices;
 
-    @PostConstruct
-    private void activateServices() {
-        activatedServices.forEach(OnlineService::onCreate);
-    }
-
-    @PreDestroy
-    private void deactivateServices() {
-        activatedServices.forEach(OnlineService::onDestroy);
-    }
 }

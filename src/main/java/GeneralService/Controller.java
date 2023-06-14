@@ -11,13 +11,16 @@ import java.util.concurrent.Future;
 @RestController
 public class Controller {
 
+    OnlineServicesCommunicationService onlineServicesCommunicationService = new OnlineServicesCommunicationService();
     public List<String> validCarUserIds = new ArrayList<>(Arrays.asList("50075", "15080"));
 
-    @Async
     @PostMapping("/request")
-    public Future<Boolean> processRequest(@RequestBody Request request) {
-        Boolean result = validCarUserIds.contains(request.getUserId());
-        return new AsyncResult<>(result);
+    public Boolean processRequest(@RequestBody Request request) {
+       if(validCarUserIds.contains(request.getUserId())){
+           onlineServicesCommunicationService.sendRequest(request);
+           return true;
+       };
+       return false;
     }
 
 }
