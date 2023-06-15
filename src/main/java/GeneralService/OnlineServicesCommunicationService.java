@@ -3,7 +3,9 @@ package GeneralService;
 import onlineservices.services.WindowControl.WindowControlService;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OnlineServicesCommunicationService {
 
     private static final String MQTT_BROKER_URL = "tcp://broker.emqx.io:1883";
