@@ -6,7 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import utils.filereaders.CsvFileReader;
+import utils.CustomFileReaderFactory;
+import utils.FileType;
 
 
 import java.io.File;
@@ -18,14 +19,13 @@ import java.util.List;
 public class Configurations {
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
 
-
     @Bean
     public WindowControlService windowControlService() {
         return new WindowControlService();
     }
 
     public List<String> getActivatedServicesNames() {
-        return new CsvFileReader().readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
+        return CustomFileReaderFactory.getFileReader(FileType.CSV).readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
     }
 
     @Bean
@@ -53,7 +53,7 @@ public class Configurations {
                 LOGGER.error("An error occurred while creating the file: {}\\n{}", file.getPath(), exception);
             }
         }
-        List<String> extractedValidCarUserIdsAsStrings = new CsvFileReader().readFile(file);
+        List<String> extractedValidCarUserIdsAsStrings = CustomFileReaderFactory.getFileReader(FileType.CSV).readFile(file);
         if (extractedValidCarUserIdsAsStrings.isEmpty()) {
             LOGGER.info("The list of valid IDs is empty.");
         } else {
