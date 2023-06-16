@@ -6,6 +6,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
 public class OnlineServicesCommunicationService {
 
@@ -16,12 +18,9 @@ public class OnlineServicesCommunicationService {
         if (!mqttClient.isConnected())
             mqttClient.connect();
 
-        String message = String.valueOf(request.getRequestValue());
-
-        if (request.getRequestType().equals(RequestType.WINDOW_CONTROL_SERVICE_REQUEST) ||
-                request.getRequestType().equals(RequestType.MUSIC_CONTROL_SERVICE_REQUEST) ||
-                request.getRequestType().equals(RequestType.CLIMATIZATION_SERVICE_REQUEST) ||
-                request.getRequestType().equals(RequestType.TRIP_HISTORY_SERVICE_REQUEST)) {
+        boolean isValidRequestType = Arrays.asList(RequestType.values()).contains(request.getRequestType());
+        if (isValidRequestType) {
+            String message = String.valueOf(request.getRequestValue());
             mqttClient.publish(request.getRequestType().toString(), new MqttMessage(message.getBytes()));
         }
     }
