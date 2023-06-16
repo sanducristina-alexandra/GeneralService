@@ -5,7 +5,6 @@ import onlineservices.services.WindowControl.WindowControlService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ import java.util.List;
 @Configuration
 public class Configurations {
     private static final String MQTT_BROKER_URL = "tcp://broker.emqx.io:1883";
-    private static final String MQTT_CLIENT_ID = "OnlineServicesCommunicationService";
+    private static final String MQTT_CLIENT_ID = "GeneralService";
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
 
     @Bean
