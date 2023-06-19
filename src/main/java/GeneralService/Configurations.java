@@ -4,28 +4,32 @@ import onlineservices.OnlineService;
 import onlineservices.services.WindowControl.WindowControlService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import utils.CustomFileReaderFactory;
-import utils.FileType;
-
+import utils.filereaders.CsvFileReader;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 public class Configurations {
+    private static final String MQTT_BROKER_URL = "tcp://broker.emqx.io:1883";
+    private static final String MQTT_CLIENT_ID = "GeneralService";
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
 
     @Bean
     public WindowControlService windowControlService() {
-        return new WindowControlService();
+        WindowControlService windowControlService = new WindowControlService();
+        windowControlService.onCreate();
+        return windowControlService;
     }
 
     public List<String> getActivatedServicesNames() {
-        return CustomFileReaderFactory.getFileReader(FileType.CSV).readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
+        CsvFileReader fileReader = new CsvFileReader();
+        return fileReader.readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
     }
 
     @Bean
@@ -43,36 +47,8 @@ public class Configurations {
     }
 
     @Bean
-    public List<Integer> validCarUserIds() {
-        List<Integer> validCarUserIds = new ArrayList<>();
-        File file = new File(".\\src\\main\\resources\\valid-car-user-ids.csv");
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException exception) {
-                LOGGER.error("An error occurred while creating the file: {}\\n{}", file.getPath(), exception);
-            }
-        }
-        List<String> extractedValidCarUserIdsAsStrings = CustomFileReaderFactory.getFileReader(FileType.CSV).readFile(file);
-        if (extractedValidCarUserIdsAsStrings.isEmpty()) {
-            LOGGER.info("The list of valid IDs is empty.");
-        } else {
-            for (String string : extractedValidCarUserIdsAsStrings) {
-                if (isInteger(string)) {
-                    validCarUserIds.add(Integer.parseInt(string));
-                    LOGGER.info(string + " is in the valid IDs list.");
-                }
-            }
-        }
-        return validCarUserIds;
+    public MqttClient mqttClient() throws Exception {
+        return new MqttClient(MQTT_BROKER_URL, MQTT_CLIENT_ID, new MemoryPersistence());
     }
 
-    public boolean isInteger(String string) {
-        try {
-            Integer.parseInt(string);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
 }
