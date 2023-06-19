@@ -18,8 +18,7 @@ public class OnlineServicesCommunicationService {
         if (!mqttClient.isConnected())
             mqttClient.connect();
 
-        boolean isValidRequestType = Arrays.asList(RequestType.values()).contains(request.getRequestType());
-        if (isValidRequestType) {
+        if (Arrays.asList(RequestType.values()).contains(request.getRequestType())) {
             String message = String.valueOf(request.getRequestValue());
             mqttClient.publish(request.getRequestType().toString(), new MqttMessage(message.getBytes()));
         }

@@ -13,7 +13,7 @@ import java.util.List;
 public class Controller {
 
     @Autowired
-    OnlineServicesCommunicationService onlineServicesCommunicationService;
+    private OnlineServicesCommunicationService onlineServicesCommunicationService;
     public List<String> validCarUserIds = new ArrayList<>(Arrays.asList("50075", "15080"));
 
     @PostMapping("/request")
