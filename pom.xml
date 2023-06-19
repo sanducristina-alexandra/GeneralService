@@ -64,7 +64,6 @@
             <version>30.1-jre</version>
         </dependency>
         <dependency>
-
             <groupId>org.bootcamp</groupId>
             <artifactId>OnlineServices</artifactId>
             <version>1.0-SNAPSHOT</version>
