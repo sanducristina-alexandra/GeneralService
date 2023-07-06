@@ -1,4 +1,4 @@
-package GeneralService;
+package classes;
 
 public enum RequestType {
     WINDOW_CONTROL_SERVICE_REQUEST,

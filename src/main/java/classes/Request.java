@@ -1,4 +1,4 @@
-package GeneralService;
+package classes;
 
 public class Request {
 

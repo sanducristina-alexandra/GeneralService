@@ -1,4 +1,4 @@
-package GeneralService;
+package configurations;
 
 import onlineservices.OnlineService;
 import onlineservices.services.WindowControl.WindowControlService;
