@@ -1,7 +1,7 @@
 package controller;
 
 import service.OnlineServicesCommunicationService;
-import classes.Request;
+import models.Request;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +40,24 @@ public class Controller implements IController {
     public String uploadCsv(@RequestBody byte[] fileBytes, @RequestHeader("Accept") String acceptHeader,
                             @RequestHeader("Content-Disposition") String contentDisposition) throws IOException {
         return fileService.uploadCsv(acceptHeader, fileBytes, contentDisposition);
+    }
+
+    @Override
+    @DeleteMapping("/delete_csv/{csvName:.+}")
+    public String deleteCsv(String csvName) throws IOException {
+        return fileService.deleteCsv(csvName);
+    }
+
+    @Override
+    @PostMapping("/upload_txt")
+    public String uploadTxt(@RequestBody byte[] fileBytes, @RequestHeader("Accept") String acceptHeader,
+                            @RequestHeader("Content-Disposition") String contentDisposition) throws IOException {
+        return fileService.uploadTxt(acceptHeader, fileBytes, contentDisposition);
+    }
+
+    @Override
+    @DeleteMapping("/delete_txt/{txtName:.+}")
+    public String deleteTxt(String txtName) throws IOException {
+        return fileService.deleteTxt(txtName);
     }
 }

@@ -1,9 +1,8 @@
 package controller;
 
-import classes.Request;
+import models.Request;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -23,4 +22,14 @@ public interface IController {
     @PostMapping("/upload_csv")
     String uploadCsv(@RequestBody byte[] fileBytes, @RequestHeader("Accept") String acceptHeader,
                      @RequestHeader("Content-Disposition") String contentDisposition) throws IOException;
+
+    @DeleteMapping("/delete_csv/{csvName:.+}")
+    public String deleteCsv(@PathVariable String csvName) throws IOException;
+
+    @PostMapping("/upload_txt")
+    String uploadTxt(@RequestBody byte[] fileBytes, @RequestHeader("Accept") String acceptHeader,
+                     @RequestHeader("Content-Disposition") String contentDisposition) throws IOException;
+
+    @DeleteMapping("/delete_txt/{txtName:.+}")
+    public String deleteTxt(@PathVariable String txtName) throws IOException;
 }

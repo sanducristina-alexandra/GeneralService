@@ -1,7 +1,7 @@
 package service;
 
-import classes.Request;
-import classes.RequestType;
+import models.Request;
+import models.RequestType;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
