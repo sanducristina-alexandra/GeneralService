@@ -1,4 +1,4 @@
-package GeneralService;
+package models;
 
 public class Request {
 

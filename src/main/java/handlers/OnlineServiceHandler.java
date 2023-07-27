@@ -1,4 +1,4 @@
-package GeneralService;
+package handlers;
 
 import onlineservices.OnlineService;
 import org.springframework.beans.factory.annotation.Autowired;
