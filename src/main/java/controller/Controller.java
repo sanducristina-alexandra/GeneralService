@@ -1,5 +1,6 @@
 package controller;
 
+import service.EmulatorCommunicationService;
 import service.OnlineServicesCommunicationService;
 import models.Request;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -16,6 +17,8 @@ public class Controller implements IController {
     private OnlineServicesCommunicationService onlineServicesCommunicationService;
     @Autowired
     FileService fileService;
+    @Autowired
+    EmulatorCommunicationService emulatorCommunicationService;
 
     @PostMapping("/request")
     public Boolean processRequest(@RequestBody Request request) throws MqttException {
@@ -59,5 +62,11 @@ public class Controller implements IController {
     @DeleteMapping("/delete_txt/{txtName:.+}")
     public String deleteTxt(String txtName) throws IOException {
         return fileService.deleteTxt(txtName);
+    }
+
+    @Override
+    @PostMapping("/receive_data_from_emulator")
+    public String receiveDataFromEmulator(@RequestBody String data) {
+        return emulatorCommunicationService.receiveData(data);
     }
 }

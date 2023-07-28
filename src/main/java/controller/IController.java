@@ -32,4 +32,7 @@ public interface IController {
 
     @DeleteMapping("/delete_txt/{txtName:.+}")
     public String deleteTxt(@PathVariable String txtName) throws IOException;
+
+    @PostMapping("/receive_data_from_emulator")
+    public String receiveDataFromEmulator(@RequestBody String data);
 }
