@@ -12,6 +12,7 @@ import utils.filereaders.CsvFileReader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -49,6 +50,11 @@ public class Configurations {
     @Bean
     public MqttClient mqttClient() throws Exception {
         return new MqttClient(MQTT_BROKER_URL, MQTT_CLIENT_ID, new MemoryPersistence());
+    }
+
+    @Bean
+    public List<String> validCarUserIds(){
+         return new ArrayList<>(Arrays.asList("50075", "15080"));
     }
 
 }
