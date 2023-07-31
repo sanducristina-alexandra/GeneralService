@@ -1,6 +1,6 @@
 package models;
 
-public enum RequestType {
+public enum Topic {
     WINDOW_CONTROL_SERVICE_REQUEST,
     MUSIC_CONTROL_SERVICE_REQUEST,
     CLIMATIZATION_SERVICE_REQUEST,

@@ -3,15 +3,15 @@ package models;
 public class Request {
 
     private String userId;
-    private RequestType requestType;
+    private Topic topic;
     private short requestValue;
     public Request() {
 
     }
 
-    public Request(String userId, RequestType requestType, short requestValue) {
+    public Request(String userId, Topic topic, short requestValue) {
         this.userId = userId;
-        this.requestType = requestType;
+        this.topic = topic;
         this.requestValue = requestValue;
     }
 
@@ -23,12 +23,12 @@ public class Request {
         this.userId = userId;
     }
 
-    public RequestType getRequestType() {
-        return requestType;
+    public Topic getTopic() {
+        return topic;
     }
 
-    public void setRequestType(RequestType requestType) {
-        this.requestType = requestType;
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 
     public short getRequestValue() {
@@ -43,7 +43,7 @@ public class Request {
     public String toString() {
         return "Request{" +
                 "userId=" + userId +
-                ", requestType=" + requestType +
+                ", topic=" + topic +
                 ", requestValue=" + requestValue +
                 '}';
     }
