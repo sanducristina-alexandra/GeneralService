@@ -1,7 +1,8 @@
 package configurations;
 
-import onlineservices.OnlineService;
+import onlineservices.services.OnlineService;
 import onlineservices.services.CarClimatization.CarClimatizationService;
+import onlineservices.services.CarGps.CarGpsService;
 import onlineservices.services.WindowControl.WindowControlService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,13 @@ public class Configurations {
         return carClimatizationService;
     }
 
+    @Bean
+    public CarGpsService carGpsService(){
+        CarGpsService carGpsService = new CarGpsService();
+        carGpsService.onCreate();
+        return carGpsService;
+    }
+
     public List<String> getActivatedServicesNames() {
         CsvFileReader fileReader = new CsvFileReader();
         return fileReader.readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
@@ -50,6 +58,12 @@ public class Configurations {
             }
             if (serviceName.equals(CarClimatizationService.class.getSimpleName())) {
                 activatedServices.add(carClimatizationService());
+                LOGGER.info(serviceName + " is in the activated services list.");
+            } else {
+                LOGGER.info(serviceName + " is not in the activated services list.");
+            }
+            if (serviceName.equals(CarGpsService.class.getSimpleName())) {
+                activatedServices.add(carGpsService());
                 LOGGER.info(serviceName + " is in the activated services list.");
             } else {
                 LOGGER.info(serviceName + " is not in the activated services list.");
