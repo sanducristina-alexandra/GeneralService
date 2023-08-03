@@ -1,5 +1,8 @@
 package configurations;
 
+import database.ReportDao;
+import database.ReportTableInitializer;
+import database.DataBaseManager;
 import onlineservices.services.OnlineService;
 import onlineservices.services.CarClimatization.CarClimatizationService;
 import onlineservices.services.CarGps.CarGpsService;
@@ -22,12 +25,14 @@ public class Configurations {
     private static final String MQTT_BROKER_URL = "tcp://broker.emqx.io:1883";
     private static final String MQTT_CLIENT_ID = "GeneralService";
     private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
+
     @Bean
     public WindowControlService windowControlService() {
         WindowControlService windowControlService = new WindowControlService();
         windowControlService.onCreate();
         return windowControlService;
     }
+
     @Bean
     public CarClimatizationService carClimatizationService() {
         CarClimatizationService carClimatizationService = new CarClimatizationService();
@@ -36,7 +41,7 @@ public class Configurations {
     }
 
     @Bean
-    public CarGpsService carGpsService(){
+    public CarGpsService carGpsService() {
         CarGpsService carGpsService = new CarGpsService();
         carGpsService.onCreate();
         return carGpsService;
@@ -46,6 +51,7 @@ public class Configurations {
         CsvFileReader fileReader = new CsvFileReader();
         return fileReader.readFile(new File(".\\src\\main\\resources\\ActivatedServices.csv"));
     }
+
     @Bean
     public List<OnlineService> activatedServices() {
         List<OnlineService> activatedServices = new ArrayList<>();
@@ -82,4 +88,18 @@ public class Configurations {
         return new ArrayList<>(Arrays.asList("50075", "15080"));
     }
 
+    @Bean
+    public ReportDao climatizationReportDao() {
+        return new ReportDao();
+    }
+
+    @Bean
+    public DataBaseManager dataBaseManager() {
+        return new DataBaseManager();
+    }
+
+    @Bean
+    public ReportTableInitializer climatizationReportTableInitializer() {
+        return new ReportTableInitializer();
+    }
 }
