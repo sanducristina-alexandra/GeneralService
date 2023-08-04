@@ -1,6 +1,7 @@
 package controller;
 
 import database.ReportDao;
+import email.EmailSender;
 import onlineservices.models.ClimatizationReport;
 import onlineservices.models.TripReport;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,9 @@ import models.Request;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import service.TripReportService;
+
+import java.util.Date;
+import java.util.Map;
 
 @RestController
 public class Controller {
@@ -49,4 +53,20 @@ public class Controller {
         reportDao.saveTripReport(report);
         return "Report received successfully!";
     }
+
+    @PostMapping("/receive_sos_data_from_gps_service")
+    public String receiveSOSData(@RequestBody Map<String, Object> sosData) {
+        String lastCoordinates = (String) sosData.get("lastCoordinates");
+
+        // Get the timestamp as a Long and create a Date object
+        Long lastCoordinatesDateTimestamp = (Long) sosData.get("lastCoordinatesDate");
+        Date lastCoordinatesDate = new Date(lastCoordinatesDateTimestamp);
+
+        EmailSender.sendEmail("RaduCorneliu.Iancu@harman.com", lastCoordinates, lastCoordinatesDate.toString());
+        System.out.println("Received SOS data:");
+        System.out.println("Last coordinates: " + lastCoordinates);
+        System.out.println("Last coordinates date: " + lastCoordinatesDate);
+        return "SOS data received successfully.";
+    }
+
 }
