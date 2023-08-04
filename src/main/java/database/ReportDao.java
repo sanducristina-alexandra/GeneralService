@@ -1,14 +1,16 @@
 package database;
 
 import onlineservices.models.ClimatizationReport;
+import onlineservices.models.Status;
 import onlineservices.models.TripReport;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class ReportDao {
@@ -50,4 +52,54 @@ public class ReportDao {
             throw new RuntimeException(e);
         }
     }
+
+    public List<String> getLastCompletedTripCoordinates() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT TripCoordinates FROM TripReports WHERE Status = 'COMPLETE' ORDER BY Id DESC LIMIT 1")) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                List<String> lastCoordinates =
+                        Arrays.asList(resultSet.getString("TripCoordinates").split(","));
+
+                ArrayList<String> formattedCoordinates = new ArrayList<>();
+                for(int i=0; i<lastCoordinates.size(); i+=2) {
+                    String lat = lastCoordinates.get(i).trim();
+                    String lng = lastCoordinates.get(i+1).trim();
+                    formattedCoordinates.add(lat + "," + lng);
+                }
+                return formattedCoordinates;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public TripReport getLastTripReport() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT * FROM TripReports ORDER BY Id DESC LIMIT 1")) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                TripReport report = new TripReport();
+                report.setStartTripDate(DATE_FORMAT.parse(resultSet.getString("StartTripDate")));
+                report.setEndTripDate(DATE_FORMAT.parse(resultSet.getString("EndTripDate")));
+                report.setStatus(Status.valueOf(resultSet.getString("Status")));
+                report.setSosEmailSent(resultSet.getBoolean("SosEmailSent"));
+                report.setTripCoordinates(Arrays.asList(resultSet.getString("TripCoordinates").split(",")));
+
+                return report;
+            }
+
+        } catch (SQLException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
 }
+

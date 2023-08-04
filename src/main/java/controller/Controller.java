@@ -2,8 +2,10 @@ package controller;
 
 import database.ReportDao;
 import email.EmailSender;
+import maps.MapImageGenerator;
 import onlineservices.models.ClimatizationReport;
 import onlineservices.models.TripReport;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import service.TripReportService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -63,5 +66,12 @@ public class Controller {
 
         EmailSender.sendEmail("RaduCorneliu.Iancu@harman.com", lastCoordinates, lastCoordinatesDate.toString());
         return "SOS data received successfully.";
+    }
+
+    @GetMapping("/get_last_trip")
+    public String processData() {
+        List<String> lastCoordinates = reportDao.getLastCompletedTripCoordinates();
+        System.out.println(lastCoordinates.toString());
+        return MapImageGenerator.getDirectionsUrl(lastCoordinates);
     }
 }
