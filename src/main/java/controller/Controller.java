@@ -62,18 +62,7 @@ public class Controller {
         Long lastCoordinatesDateTimestamp = (Long) sosData.get("lastCoordinatesDate");
         Date lastCoordinatesDate = new Date(lastCoordinatesDateTimestamp);
 
-        String emailBody = "Hello," +
-                "\n" +
-                "Your car requires urgent assistance." +
-                "\n" +
-                "Last known location: " + lastCoordinates +
-                "\n" +
-                "Last report received at:" + lastCoordinatesDate +
-                "\n" +
-                "Kind regards," +
-                "\n" +
-                "Car.";
-        EmailSender.sendEmail("RaduCorneliu.Iancu@harman.com", "SOS", emailBody);
+        EmailSender.sendEmail("RaduCorneliu.Iancu@harman.com", lastCoordinates, lastCoordinatesDate.toString());
         System.out.println("Received SOS data:");
         System.out.println("Last coordinates: " + lastCoordinates);
         System.out.println("Last coordinates date: " + lastCoordinatesDate);
