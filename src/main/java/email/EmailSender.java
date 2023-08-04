@@ -3,11 +3,6 @@ package email;
 import models.SendEnhancedRequestBody;
 import models.SendEnhancedResponseBody;
 import models.SendRequestMessage;
-import org.simplejavamail.api.email.Email;
-import org.simplejavamail.api.mailer.Mailer;
-import org.simplejavamail.api.mailer.config.TransportStrategy;
-import org.simplejavamail.email.EmailBuilder;
-import org.simplejavamail.mailer.MailerBuilder;
 import services.Courier;
 import services.SendService;
 
@@ -41,5 +36,4 @@ public class EmailSender {
             e.printStackTrace();
         }
     }
-
 }

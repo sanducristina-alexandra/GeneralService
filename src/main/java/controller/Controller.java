@@ -58,15 +58,10 @@ public class Controller {
     public String receiveSOSData(@RequestBody Map<String, Object> sosData) {
         String lastCoordinates = (String) sosData.get("lastCoordinates");
 
-        // Get the timestamp as a Long and create a Date object
         Long lastCoordinatesDateTimestamp = (Long) sosData.get("lastCoordinatesDate");
         Date lastCoordinatesDate = new Date(lastCoordinatesDateTimestamp);
 
         EmailSender.sendEmail("RaduCorneliu.Iancu@harman.com", lastCoordinates, lastCoordinatesDate.toString());
-        System.out.println("Received SOS data:");
-        System.out.println("Last coordinates: " + lastCoordinates);
-        System.out.println("Last coordinates date: " + lastCoordinatesDate);
         return "SOS data received successfully.";
     }
-
 }
