@@ -5,7 +5,12 @@ import onlineservices.models.Status;
 import onlineservices.models.TripReport;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,14 +42,15 @@ public class ReportDao {
     public void saveTripReport(TripReport report) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO TripReports (StartTripDate, EndTripDate, Status, SosEmailSent, TripCoordinates) " +
-                             "VALUES (?, ?, ?, ?, ?)")) {
+                     "INSERT INTO TripReports (id, StartTripDate, EndTripDate, Status, SosEmailSent, TripCoordinates) " +
+                             "VALUES (?, ?, ?, ?, ?, ?)")) {
 
-            preparedStatement.setString(1, DATE_FORMAT.format(report.getStartTripDate()));
-            preparedStatement.setString(2, DATE_FORMAT.format(report.getEndTripDate()));
-            preparedStatement.setString(3, report.getStatus().name());
-            preparedStatement.setBoolean(4, report.isSosEmailSent());
-            preparedStatement.setString(5, String.join(",", report.getTripCoordinates()));
+            preparedStatement.setShort(1, report.getId());
+            preparedStatement.setString(2, DATE_FORMAT.format(report.getStartTripDate()));
+            preparedStatement.setString(3, DATE_FORMAT.format(report.getEndTripDate()));
+            preparedStatement.setString(4, report.getStatus().name());
+            preparedStatement.setBoolean(5, report.isSosEmailSent());
+            preparedStatement.setString(6, String.join(",", report.getTripCoordinates()));
 
             preparedStatement.executeUpdate();
 
@@ -86,6 +92,7 @@ public class ReportDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 TripReport report = new TripReport();
+                report.setId(resultSet.getShort("Id"));
                 report.setStartTripDate(DATE_FORMAT.parse(resultSet.getString("StartTripDate")));
                 report.setEndTripDate(DATE_FORMAT.parse(resultSet.getString("EndTripDate")));
                 report.setStatus(Status.valueOf(resultSet.getString("Status")));
@@ -101,5 +108,25 @@ public class ReportDao {
         return null;
     }
 
+    public ClimatizationReport getLastClimatizationReport() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT * FROM ClimatizationReports ORDER BY Id DESC LIMIT 1")) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                ClimatizationReport report = new ClimatizationReport();
+                report.setId(resultSet.getShort("Id"));
+                report.setDate(DATE_FORMAT.parse(resultSet.getString("Date")));
+                report.setPower(resultSet.getShort("Power"));
+                report.setActionCode(resultSet.getShort("ActionCode"));
+                return report;
+            }
+
+        } catch (SQLException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }
 
