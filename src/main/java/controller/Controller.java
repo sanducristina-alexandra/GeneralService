@@ -5,6 +5,7 @@ import email.EmailSender;
 import maps.MapImageGenerator;
 import onlineservices.models.ClimatizationReport;
 import onlineservices.models.TripReport;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,11 @@ import service.TripReportService;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 @RestController
 public class Controller {
@@ -73,5 +79,43 @@ public class Controller {
         List<String> lastCoordinates = reportDao.getLastCompletedTripCoordinates();
         System.out.println(lastCoordinates.toString());
         return MapImageGenerator.getDirectionsUrl(lastCoordinates);
+    }
+
+    @GetMapping("/get_last_climatization_report")
+    @Async
+    public String getLastClimatizationReport() throws Exception {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        CompletableFuture<String> futureReport = new CompletableFuture<>();
+        executor.schedule(() -> {
+            String report = reportDao.getLastClimatizationReport().toString();
+            futureReport.complete(report);
+        }, 60, TimeUnit.SECONDS);
+
+        executor.shutdown();
+
+        try {
+            return futureReport.join();
+        } catch (CompletionException e) {
+            throw new Exception(e.getCause());
+        }
+    }
+
+    @GetMapping("/get_last_trip_report")
+    @Async
+    public String getLastTripReport() throws Exception {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        CompletableFuture<String> futureReport = new CompletableFuture<>();
+        executor.schedule(() -> {
+            String report = reportDao.getLastTripReport().toString();
+            futureReport.complete(report);
+        }, 60, TimeUnit.SECONDS);
+
+        executor.shutdown();
+
+        try {
+            return futureReport.join();
+        } catch (CompletionException e) {
+            throw new Exception(e.getCause());
+        }
     }
 }

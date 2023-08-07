@@ -27,7 +27,7 @@ public class ReportTableInitializer {
     private void createTripReportTable(Connection conn) {
         try (Statement statement = conn.createStatement()) {
             String createTableSQL = "CREATE TABLE IF NOT EXISTS TripReports ("
-                    + "Id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "Id INTEGER PRIMARY KEY,"
                     + "StartTripDate TEXT,"
                     + "EndTripDate TEXT,"
                     + "Status TEXT,"
