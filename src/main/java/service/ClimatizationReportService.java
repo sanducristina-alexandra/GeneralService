@@ -10,6 +10,7 @@ public class ClimatizationReportService {
     private static final Logger LOGGER = LogManager.getLogger(ClimatizationReportService.class.getName());
 
     public String receiveData(String data) throws Exception {
+        LOGGER.info("Recieved data from CarClimatizationService: " + data);
         return data;
     }
 }

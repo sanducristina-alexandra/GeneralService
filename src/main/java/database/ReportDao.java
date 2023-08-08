@@ -5,7 +5,6 @@ import onlineservices.models.Status;
 import onlineservices.models.TripReport;
 import org.springframework.stereotype.Component;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,12 +24,11 @@ public class ReportDao {
     public void saveClimatizationReport(ClimatizationReport report) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO ClimatizationReports (Id, Date, Power, ActionCode) VALUES (?, ?, ?, ?)")) {
+                     "INSERT INTO ClimatizationReports (Date, Power, ActionCode) VALUES (?, ?, ?)")) {
 
-            preparedStatement.setShort(1, report.getId());
-            preparedStatement.setString(2, DATE_FORMAT.format(report.getDate()));
-            preparedStatement.setShort(3, report.getPower());
-            preparedStatement.setShort(4, report.getActionCode());
+            preparedStatement.setString(1, DATE_FORMAT.format(report.getDate()));
+            preparedStatement.setShort(2, report.getPower());
+            preparedStatement.setShort(3, report.getActionCode());
 
             preparedStatement.executeUpdate();
 
@@ -42,15 +40,14 @@ public class ReportDao {
     public void saveTripReport(TripReport report) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO TripReports (id, StartTripDate, EndTripDate, Status, SosEmailSent, TripCoordinates) " +
-                             "VALUES (?, ?, ?, ?, ?, ?)")) {
+                     "INSERT INTO TripReports (StartTripDate, EndTripDate, Status, SosEmailSent, TripCoordinates) " +
+                             "VALUES (?, ?, ?, ?, ?)")) {
 
-            preparedStatement.setShort(1, report.getId());
-            preparedStatement.setString(2, DATE_FORMAT.format(report.getStartTripDate()));
-            preparedStatement.setString(3, DATE_FORMAT.format(report.getEndTripDate()));
-            preparedStatement.setString(4, report.getStatus().name());
-            preparedStatement.setBoolean(5, report.isSosEmailSent());
-            preparedStatement.setString(6, String.join(",", report.getTripCoordinates()));
+            preparedStatement.setString(1, DATE_FORMAT.format(report.getStartTripDate()));
+            preparedStatement.setString(2, DATE_FORMAT.format(report.getEndTripDate()));
+            preparedStatement.setString(3, report.getStatus().name());
+            preparedStatement.setBoolean(4, report.isSosEmailSent());
+            preparedStatement.setString(5, String.join(",", report.getTripCoordinates()));
 
             preparedStatement.executeUpdate();
 
@@ -70,9 +67,9 @@ public class ReportDao {
                         Arrays.asList(resultSet.getString("TripCoordinates").split(","));
 
                 ArrayList<String> formattedCoordinates = new ArrayList<>();
-                for(int i=0; i<lastCoordinates.size(); i+=2) {
+                for (int i = 0; i < lastCoordinates.size(); i += 2) {
                     String lat = lastCoordinates.get(i).trim();
-                    String lng = lastCoordinates.get(i+1).trim();
+                    String lng = lastCoordinates.get(i + 1).trim();
                     formattedCoordinates.add(lat + "," + lng);
                 }
                 return formattedCoordinates;

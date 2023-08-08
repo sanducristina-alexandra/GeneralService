@@ -27,7 +27,7 @@ public class ReportTableInitializer {
     private void createTripReportTable(Connection conn) {
         try (Statement statement = conn.createStatement()) {
             String createTableSQL = "CREATE TABLE IF NOT EXISTS TripReports ("
-                    + "Id INTEGER PRIMARY KEY,"
+                    + "Id INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "StartTripDate TEXT,"
                     + "EndTripDate TEXT,"
                     + "Status TEXT,"
@@ -43,7 +43,7 @@ public class ReportTableInitializer {
     private void createClimatizationReportTable(Connection conn) throws SQLException {
         try (Statement statement = conn.createStatement()) {
             String createTableSQL = "CREATE TABLE IF NOT EXISTS ClimatizationReports ("
-                    + "Id INTEGER PRIMARY KEY,"
+                    + "Id INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "Date TEXT,"
                     + "Power INTEGER,"
                     + "ActionCode INTEGER"

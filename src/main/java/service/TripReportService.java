@@ -10,6 +10,7 @@ public class TripReportService {
     private static final Logger LOGGER = LogManager.getLogger(TripReportService.class.getName());
 
     public String receiveData(String data) throws Exception {
+        LOGGER.info("Recieved data from CarGpsService: " + data);
         return data;
     }
 }
