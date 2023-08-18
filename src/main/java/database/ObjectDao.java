@@ -5,11 +5,7 @@ import onlineservices.models.Status;
 import onlineservices.models.TripReport;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class ReportDao {
+public class ObjectDao {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String DATABASE_URL = "jdbc:sqlite:GeneralService.db";
 
@@ -51,6 +47,24 @@ public class ReportDao {
 
             preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveTargetTemperature(int temperatureValue) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM TargetTemperature");
+            rs.next();
+            int rowCount = rs.getInt(1);
+            if (rowCount == 0) {
+                String insertSQL = "INSERT INTO TargetTemperature (TemperatureValue) VALUES (" + temperatureValue + ")";
+                statement.execute(insertSQL);
+            } else {
+                String updateSQL = "UPDATE TargetTemperature SET TemperatureValue = " + temperatureValue;
+                statement.execute(updateSQL);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -124,6 +138,23 @@ public class ReportDao {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public int getTargetTemperature() throws SQLException {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            String query = "SELECT TemperatureValue FROM TargetTemperature";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet resultSet = statement.executeQuery(query);
+                if (resultSet.next()) {
+                    return resultSet.getInt("TemperatureValue");
+                } else {
+                    throw new RuntimeException("No target temperature found in the database.");
+                }
+            }
+
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package controller;
 
-import database.ReportDao;
+import database.DataBaseManager;
+import database.ObjectDao;
 import email.EmailSender;
 import maps.MapImageGenerator;
 import onlineservices.models.ClimatizationReport;
@@ -31,17 +32,17 @@ public class Controller {
     @Autowired
     private TripReportService tripReportService;
     @Autowired
-    private ReportDao reportDao;
+    private ObjectDao objectDao;
 
     @PostMapping("/receive_reports_from_climatization_service")
     public String receiveReportFromClimatizationService(@RequestBody ClimatizationReport report) {
-        reportDao.saveClimatizationReport(report);
+        objectDao.saveClimatizationReport(report);
         return "Report received successfully!";
     }
 
     @PostMapping("/receive_reports_from_gps_service")
     public String receiveReportsFromGpsService(@RequestBody TripReport report) {
-        reportDao.saveTripReport(report);
+        objectDao.saveTripReport(report);
         return "Report received successfully!";
     }
 
@@ -58,7 +59,7 @@ public class Controller {
 
     @GetMapping("/get_last_trip")
     public String processData() {
-        List<String> lastCoordinates = reportDao.getLastCompletedTripCoordinates();
+        List<String> lastCoordinates = objectDao.getLastCompletedTripCoordinates();
         if (lastCoordinates.size() >= 2)
             return MapImageGenerator.getDirectionsUrl(lastCoordinates);
         else
@@ -71,9 +72,9 @@ public class Controller {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
-            String report = reportDao.getLastClimatizationReport().toString();
+            String report = objectDao.getLastClimatizationReport().toString();
             futureReport.complete(report);
-        }, 60, TimeUnit.SECONDS);
+        }, 6, TimeUnit.SECONDS);
 
         executor.shutdown();
 
@@ -90,9 +91,9 @@ public class Controller {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
-            String report = reportDao.getLastTripReport().toString();
+            String report = objectDao.getLastTripReport().toString();
             futureReport.complete(report);
-        }, 60, TimeUnit.SECONDS);
+        }, 6, TimeUnit.SECONDS);
 
         executor.shutdown();
 
@@ -102,4 +103,21 @@ public class Controller {
             throw new Exception(e.getCause());
         }
     }
+
+    @PostMapping("/receive_target_temperature_from_climatization_service")
+    public String receiveTemperature(@RequestBody String targetTemperature) {
+        try {
+            int targetTemperatureValue = Integer.parseInt(targetTemperature);
+            objectDao.saveTargetTemperature(targetTemperatureValue);
+            return "Recieved target temperature value: " + targetTemperatureValue;
+        } catch (NumberFormatException e) {
+            return "Invalid temperature value recieved.";
+        }
+    }
+
+    @GetMapping("/get_target_temperature")
+    public String getTargetTemperature() throws Exception{
+        return String.valueOf(objectDao.getTargetTemperature());
+    }
+
 }

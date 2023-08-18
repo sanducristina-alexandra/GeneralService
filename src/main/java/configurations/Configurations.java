@@ -1,7 +1,7 @@
 package configurations;
 
-import database.ReportDao;
-import database.ReportTableInitializer;
+import database.ObjectDao;
+import database.ObjectTableInitializer;
 import database.DataBaseManager;
 import onlineservices.services.OnlineService;
 import onlineservices.services.CarClimatization.CarClimatizationService;
@@ -68,10 +68,9 @@ public class Configurations {
         return new MqttClient(MQTT_BROKER_URL, MQTT_CLIENT_ID, new MemoryPersistence());
     }
 
-
     @Bean
-    public ReportDao climatizationReportDao() {
-        return new ReportDao();
+    public ObjectDao climatizationReportDao() {
+        return new ObjectDao();
     }
 
     @Bean
@@ -80,7 +79,7 @@ public class Configurations {
     }
 
     @Bean
-    public ReportTableInitializer climatizationReportTableInitializer() {
-        return new ReportTableInitializer();
+    public ObjectTableInitializer climatizationReportTableInitializer() {
+        return new ObjectTableInitializer();
     }
 }

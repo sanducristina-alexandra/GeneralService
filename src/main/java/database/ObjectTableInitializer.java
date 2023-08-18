@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Component
-public class ReportTableInitializer {
+public class ObjectTableInitializer {
     @PostConstruct
     public void createTables() {
         String url = "jdbc:sqlite:GeneralService.db";
@@ -18,7 +18,19 @@ public class ReportTableInitializer {
             if (conn != null) {
                 createClimatizationReportTable(conn);
                 createTripReportTable(conn);
+                createTargetTemperatureTable(conn);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createTargetTemperatureTable(Connection conn) {
+        try (Statement statement = conn.createStatement()) {
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS TargetTemperature ("
+                    + "TemperatureValue INTEGER"
+                    + ");";
+            statement.execute(createTableSQL);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -51,4 +63,6 @@ public class ReportTableInitializer {
             statement.execute(createTableSQL);
         }
     }
+
+
 }
