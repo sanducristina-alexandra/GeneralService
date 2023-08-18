@@ -5,12 +5,7 @@ import onlineservices.models.Status;
 import onlineservices.models.TripReport;
 import org.springframework.stereotype.Component;
 
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,19 +13,18 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class ReportDao {
+public class ObjectDao {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String DATABASE_URL = "jdbc:sqlite:GeneralService.db";
 
     public void saveClimatizationReport(ClimatizationReport report) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO ClimatizationReports (Id, Date, Power, ActionCode) VALUES (?, ?, ?, ?)")) {
+                     "INSERT INTO ClimatizationReports (Date, Power, ActionCode) VALUES (?, ?, ?)")) {
 
-            preparedStatement.setShort(1, report.getId());
-            preparedStatement.setString(2, DATE_FORMAT.format(report.getDate()));
-            preparedStatement.setShort(3, report.getPower());
-            preparedStatement.setShort(4, report.getActionCode());
+            preparedStatement.setString(1, DATE_FORMAT.format(report.getDate()));
+            preparedStatement.setShort(2, report.getPower());
+            preparedStatement.setShort(3, report.getActionCode());
 
             preparedStatement.executeUpdate();
 
@@ -42,18 +36,35 @@ public class ReportDao {
     public void saveTripReport(TripReport report) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO TripReports (id, StartTripDate, EndTripDate, Status, SosEmailSent, TripCoordinates) " +
-                             "VALUES (?, ?, ?, ?, ?, ?)")) {
+                     "INSERT INTO TripReports (StartTripDate, EndTripDate, Status, SosEmailSent, TripCoordinates) " +
+                             "VALUES (?, ?, ?, ?, ?)")) {
 
-            preparedStatement.setShort(1, report.getId());
-            preparedStatement.setString(2, DATE_FORMAT.format(report.getStartTripDate()));
-            preparedStatement.setString(3, DATE_FORMAT.format(report.getEndTripDate()));
-            preparedStatement.setString(4, report.getStatus().name());
-            preparedStatement.setBoolean(5, report.isSosEmailSent());
-            preparedStatement.setString(6, String.join(",", report.getTripCoordinates()));
+            preparedStatement.setString(1, DATE_FORMAT.format(report.getStartTripDate()));
+            preparedStatement.setString(2, DATE_FORMAT.format(report.getEndTripDate()));
+            preparedStatement.setString(3, report.getStatus().name());
+            preparedStatement.setBoolean(4, report.isSosEmailSent());
+            preparedStatement.setString(5, String.join(",", report.getTripCoordinates()));
 
             preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveTargetTemperature(int temperatureValue) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM TargetTemperature");
+            rs.next();
+            int rowCount = rs.getInt(1);
+            if (rowCount == 0) {
+                String insertSQL = "INSERT INTO TargetTemperature (TemperatureValue) VALUES (" + temperatureValue + ")";
+                statement.execute(insertSQL);
+            } else {
+                String updateSQL = "UPDATE TargetTemperature SET TemperatureValue = " + temperatureValue;
+                statement.execute(updateSQL);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -70,9 +81,9 @@ public class ReportDao {
                         Arrays.asList(resultSet.getString("TripCoordinates").split(","));
 
                 ArrayList<String> formattedCoordinates = new ArrayList<>();
-                for(int i=0; i<lastCoordinates.size(); i+=2) {
+                for (int i = 0; i < lastCoordinates.size(); i += 2) {
                     String lat = lastCoordinates.get(i).trim();
-                    String lng = lastCoordinates.get(i+1).trim();
+                    String lng = lastCoordinates.get(i + 1).trim();
                     formattedCoordinates.add(lat + "," + lng);
                 }
                 return formattedCoordinates;
@@ -127,6 +138,23 @@ public class ReportDao {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public int getTargetTemperature() throws SQLException {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            String query = "SELECT TemperatureValue FROM TargetTemperature";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet resultSet = statement.executeQuery(query);
+                if (resultSet.next()) {
+                    return resultSet.getInt("TemperatureValue");
+                } else {
+                    throw new RuntimeException("No target temperature found in the database.");
+                }
+            }
+
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }
 

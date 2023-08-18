@@ -15,7 +15,7 @@ public class DataBaseManager {
     private static final Logger LOGGER = LogManager.getLogger(DataBaseManager.class.getName());
 
     @PostConstruct
-    public void DataBaseManager() {
+    public void initializeDatabase() {
         String url = "jdbc:sqlite:GeneralService.db";
 
         try {

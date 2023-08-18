@@ -1,6 +1,7 @@
 package controller;
 
-import database.ReportDao;
+import database.DataBaseManager;
+import database.ObjectDao;
 import email.EmailSender;
 import maps.MapImageGenerator;
 import onlineservices.models.ClimatizationReport;
@@ -11,10 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import service.ClimatizationReportService;
-import service.EmulatorCommunicationService;
-import service.OnlineServicesCommunicationService;
-import models.Request;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import service.TripReportService;
 
@@ -31,35 +28,21 @@ import java.util.concurrent.CompletionException;
 public class Controller {
 
     @Autowired
-    private OnlineServicesCommunicationService onlineServicesCommunicationService;
-    @Autowired
-    private EmulatorCommunicationService emulatorCommunicationService;
-    @Autowired
     private ClimatizationReportService climatizationReportService;
     @Autowired
     private TripReportService tripReportService;
     @Autowired
-    private ReportDao reportDao;
-
-    @PostMapping("/request")
-    public Boolean processRequest(@RequestBody Request request) throws MqttException {
-        return onlineServicesCommunicationService.sendRequest(request);
-    }
-
-    @PostMapping("/receive_data_from_emulator")
-    public String receiveDataFromEmulator(@RequestBody String data) throws Exception {
-        return emulatorCommunicationService.receiveData(data);
-    }
+    private ObjectDao objectDao;
 
     @PostMapping("/receive_reports_from_climatization_service")
     public String receiveReportFromClimatizationService(@RequestBody ClimatizationReport report) {
-        reportDao.saveClimatizationReport(report);
+        objectDao.saveClimatizationReport(report);
         return "Report received successfully!";
     }
 
     @PostMapping("/receive_reports_from_gps_service")
-    public String receiveReportsFromGpsService(@RequestBody TripReport report) throws Exception {
-        reportDao.saveTripReport(report);
+    public String receiveReportsFromGpsService(@RequestBody TripReport report) {
+        objectDao.saveTripReport(report);
         return "Report received successfully!";
     }
 
@@ -76,9 +59,11 @@ public class Controller {
 
     @GetMapping("/get_last_trip")
     public String processData() {
-        List<String> lastCoordinates = reportDao.getLastCompletedTripCoordinates();
-        System.out.println(lastCoordinates.toString());
-        return MapImageGenerator.getDirectionsUrl(lastCoordinates);
+        List<String> lastCoordinates = objectDao.getLastCompletedTripCoordinates();
+        if (lastCoordinates.size() >= 2)
+            return MapImageGenerator.getDirectionsUrl(lastCoordinates);
+        else
+            return null;
     }
 
     @GetMapping("/get_last_climatization_report")
@@ -87,9 +72,9 @@ public class Controller {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
-            String report = reportDao.getLastClimatizationReport().toString();
+            String report = objectDao.getLastClimatizationReport().toString();
             futureReport.complete(report);
-        }, 60, TimeUnit.SECONDS);
+        }, 6, TimeUnit.SECONDS);
 
         executor.shutdown();
 
@@ -106,9 +91,9 @@ public class Controller {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
-            String report = reportDao.getLastTripReport().toString();
+            String report = objectDao.getLastTripReport().toString();
             futureReport.complete(report);
-        }, 60, TimeUnit.SECONDS);
+        }, 6, TimeUnit.SECONDS);
 
         executor.shutdown();
 
@@ -118,4 +103,21 @@ public class Controller {
             throw new Exception(e.getCause());
         }
     }
+
+    @PostMapping("/receive_target_temperature_from_climatization_service")
+    public String receiveTemperature(@RequestBody String targetTemperature) {
+        try {
+            int targetTemperatureValue = Integer.parseInt(targetTemperature);
+            objectDao.saveTargetTemperature(targetTemperatureValue);
+            return "Recieved target temperature value: " + targetTemperatureValue;
+        } catch (NumberFormatException e) {
+            return "Invalid temperature value recieved.";
+        }
+    }
+
+    @GetMapping("/get_target_temperature")
+    public String getTargetTemperature() throws Exception{
+        return String.valueOf(objectDao.getTargetTemperature());
+    }
+
 }

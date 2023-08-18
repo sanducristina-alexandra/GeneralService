@@ -1,9 +1,10 @@
 package maps;
 
-import com.google.maps.*;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.LatLng;
-import com.google.maps.model.Size;
 import com.google.maps.model.TravelMode;
 
 import java.util.ArrayList;
@@ -41,20 +42,19 @@ public class MapImageGenerator {
             if (result.routes != null && result.routes.length > 0) {
                 String encodedPolyline = result.routes[0].overviewPolyline.getEncodedPath();
 
-                String staticMapUrl = "https://maps.googleapis.com/maps/api/staticmap?";
-                staticMapUrl += "size=800x1800";
-                staticMapUrl += "&path=enc:" + encodedPolyline;
+                StringBuilder staticMapUrl = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?");
+                staticMapUrl.append("size=800x1800");
+                staticMapUrl.append("&path=enc:").append(encodedPolyline);
 
-                // Add markers for all waypoints
-                int label = 65; // ASCII code for 'A'
+                int label = 65;
                 for (LatLng waypoint : waypoints) {
-                    staticMapUrl += "&markers=color:red%7Clabel:" + (char) label + "%7C" + waypoint.lat + "," + waypoint.lng;
+                    staticMapUrl.append("&markers=color:red%7Clabel:").append((char) label).append("%7C").append(waypoint.lat).append(",").append(waypoint.lng);
                     label++;
                 }
 
-                staticMapUrl += "&key=" + API_KEY;
+                staticMapUrl.append("&key=" + API_KEY);
 
-                return staticMapUrl;
+                return staticMapUrl.toString();
             }
         } catch (Exception e) {
             e.printStackTrace();
