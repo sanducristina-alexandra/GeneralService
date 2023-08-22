@@ -17,11 +17,6 @@ public class TargetTemperatureEntity {
     @Column(name = "temperature_value", nullable = false)
     private int temperatureValue;
 
-    public TargetTemperatureEntity(int id, int temperatureValue) {
-        this.id = id;
-        this.temperatureValue = temperatureValue;
-    }
-
     public TargetTemperatureEntity() {
     }
 

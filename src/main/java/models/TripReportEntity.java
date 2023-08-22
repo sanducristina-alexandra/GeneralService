@@ -30,14 +30,6 @@ public class TripReportEntity {
     @Column(name = "sos_email_sent", nullable = false)
     private boolean sosEmailSent;
 
-    public TripReportEntity(List<String> tripCoordinates, Date startTripDate, Date endTripDate, String status, boolean sosEmailSent) {
-        this.tripCoordinates = tripCoordinates;
-        this.startTripDate = startTripDate;
-        this.endTripDate = endTripDate;
-        this.status = status;
-        this.sosEmailSent = sosEmailSent;
-    }
-
     public TripReportEntity() {
     }
 

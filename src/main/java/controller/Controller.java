@@ -70,7 +70,7 @@ public class Controller {
 
     @GetMapping("/get_last_climatization_report")
     @Async
-    public String getLastClimatizationReport() throws Exception {
+    public String getLastClimatizationReport() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
@@ -90,7 +90,7 @@ public class Controller {
 
     @GetMapping("/get_last_trip_report")
     @Async
-    public String getLastTripReport() throws Exception {
+    public String getLastTripReport() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
@@ -121,7 +121,7 @@ public class Controller {
     }
 
     @GetMapping("/get_target_temperature")
-    public String getTargetTemperature() throws Exception {
+    public String getTargetTemperature() {
         return String.valueOf(targetTemperatureService.getTargetTemperature());
     }
 }

@@ -22,12 +22,6 @@ public class ClimatizationReportEntity {
     @Column(name = "action_code", nullable = false)
     private short actionCode;
 
-    public ClimatizationReportEntity(Date date, short power, short action) {
-        this.date = date;
-        this.power = power;
-        this.actionCode = action;
-    }
-
     public ClimatizationReportEntity() {
 
     }
