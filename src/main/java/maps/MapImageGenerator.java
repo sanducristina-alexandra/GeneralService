@@ -14,9 +14,6 @@ public class MapImageGenerator {
     private static final String API_KEY = "AIzaSyB9SGUNS3n_HQ0MZD23DM1Wak-JCvt0Zw0";
 
     public static String getDirectionsUrl(List<String> coordinates) {
-        if (coordinates.size() < 2) {
-            throw new IllegalArgumentException("At least two coordinates are required for directions.");
-        }
 
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(API_KEY)

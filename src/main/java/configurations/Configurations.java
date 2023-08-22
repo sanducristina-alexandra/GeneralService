@@ -1,8 +1,5 @@
 package configurations;
 
-import database.ReportDao;
-import database.ReportTableInitializer;
-import database.DataBaseManager;
 import onlineservices.services.OnlineService;
 import onlineservices.services.CarClimatization.CarClimatizationService;
 import onlineservices.services.CarGps.CarGpsService;
@@ -18,11 +15,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Configuration
 public class Configurations {
+
+    private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
     private static final String MQTT_BROKER_URL = "tcp://broker.emqx.io:1883";
     private static final String MQTT_CLIENT_ID = "GeneralService";
-    private static final Logger LOGGER = LogManager.getLogger(Configurations.class.getName());
+
 
     @Bean
     public CarClimatizationService carClimatizationService() {
@@ -68,19 +68,4 @@ public class Configurations {
         return new MqttClient(MQTT_BROKER_URL, MQTT_CLIENT_ID, new MemoryPersistence());
     }
 
-
-    @Bean
-    public ReportDao climatizationReportDao() {
-        return new ReportDao();
-    }
-
-    @Bean
-    public DataBaseManager dataBaseManager() {
-        return new DataBaseManager();
-    }
-
-    @Bean
-    public ReportTableInitializer climatizationReportTableInitializer() {
-        return new ReportTableInitializer();
-    }
 }

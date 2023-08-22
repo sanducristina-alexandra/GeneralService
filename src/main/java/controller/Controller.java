@@ -1,47 +1,50 @@
 package controller;
 
-import database.ReportDao;
+import customexceptions.CustomCompletionException;
 import email.EmailSender;
 import maps.MapImageGenerator;
 import onlineservices.models.ClimatizationReport;
 import onlineservices.models.TripReport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import service.ClimatizationReportService;
-import org.springframework.beans.factory.annotation.Autowired;
-import service.TripReportService;
+import services.ClimatizationReportService;
+import services.TargetTemperatureService;
+import services.TripReportService;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class Controller {
 
     @Autowired
     private ClimatizationReportService climatizationReportService;
+
     @Autowired
     private TripReportService tripReportService;
+
     @Autowired
-    private ReportDao reportDao;
+    private TargetTemperatureService targetTemperatureService;
 
     @PostMapping("/receive_reports_from_climatization_service")
     public String receiveReportFromClimatizationService(@RequestBody ClimatizationReport report) {
-        reportDao.saveClimatizationReport(report);
+        climatizationReportService.saveClimatizationReportEntity(report);
         return "Report received successfully!";
     }
 
     @PostMapping("/receive_reports_from_gps_service")
     public String receiveReportsFromGpsService(@RequestBody TripReport report) {
-        reportDao.saveTripReport(report);
+        tripReportService.saveTripReportEntity(report);
         return "Report received successfully!";
     }
 
@@ -58,7 +61,7 @@ public class Controller {
 
     @GetMapping("/get_last_trip")
     public String processData() {
-        List<String> lastCoordinates = reportDao.getLastCompletedTripCoordinates();
+        List<String> lastCoordinates = tripReportService.getLastCompletedTripCoordinates();
         if (lastCoordinates.size() >= 2)
             return MapImageGenerator.getDirectionsUrl(lastCoordinates);
         else
@@ -71,7 +74,7 @@ public class Controller {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
-            String report = reportDao.getLastClimatizationReport().toString();
+            String report = climatizationReportService.getLastClimatizationReport().toString();
             futureReport.complete(report);
         }, 60, TimeUnit.SECONDS);
 
@@ -80,8 +83,9 @@ public class Controller {
         try {
             return futureReport.join();
         } catch (CompletionException e) {
-            throw new Exception(e.getCause());
+            throw new CustomCompletionException("The object was only partially retrieved.");
         }
+
     }
 
     @GetMapping("/get_last_trip_report")
@@ -90,7 +94,7 @@ public class Controller {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         CompletableFuture<String> futureReport = new CompletableFuture<>();
         executor.schedule(() -> {
-            String report = reportDao.getLastTripReport().toString();
+            String report = tripReportService.getLastTripReport().toString();
             futureReport.complete(report);
         }, 60, TimeUnit.SECONDS);
 
@@ -99,7 +103,25 @@ public class Controller {
         try {
             return futureReport.join();
         } catch (CompletionException e) {
-            throw new Exception(e.getCause());
+            throw new CustomCompletionException("The object was only partially retrieved.");
         }
+
+    }
+
+    @PostMapping("/receive_target_temperature_from_climatization_service")
+    public String receiveTemperature(@RequestBody String targetTemperature) {
+        try {
+            System.out.println(targetTemperature);
+            int targetTemperatureValue = Integer.parseInt(targetTemperature);
+            targetTemperatureService.saveTargetTemperature(targetTemperatureValue);
+            return "Recieved target temperature value: " + targetTemperatureValue;
+        } catch (NumberFormatException e) {
+            return "Invalid temperature value recieved.";
+        }
+    }
+
+    @GetMapping("/get_target_temperature")
+    public String getTargetTemperature() throws Exception {
+        return String.valueOf(targetTemperatureService.getTargetTemperature());
     }
 }
